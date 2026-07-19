@@ -4,21 +4,17 @@ namespace PENANO.Models // <-- Change this to your actual project namespace
 {
     public class User
     {
-        // If you are using an ID for a database table, you can include it here:
-        // public int Id { get; set; }
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(50, ErrorMessage = "Name cannot exceed 50 characters")]
+        public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Email address is required.")]
-        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
-        [Display(Name = "Email Address")]
+        [Required(ErrorMessage = "Email address is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address format")]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Password is required.")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Required(ErrorMessage = "Password is required")]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long")]
         public string Password { get; set; } = string.Empty;
-
-        // Keeps track of whether the user checked the box on the form
-        [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
     }
 }
