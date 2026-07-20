@@ -9,20 +9,20 @@
                     <!-- Header -->
                     <h2 class="text-center text-uppercase font-weight-bold mb-4">Login</h2>
 
-                    <form asp-action="Login" method="post">
+                    <form id="loginForm">
                         <!-- ASP.NET Validation Summary -->
                         <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
 
                         <!-- Email Input -->
                         <div class="form-floating mb-3">
-                            <input asp-for="Email" class="form-control" placeholder="name@example.com" required />
-                            <label asp-for="Email">Email Address</label>
-                            <span asp-validation-for="Email" class="text-danger small"></span>
+                            <input asp-for="Username" class="form-control" placeholder="Enter username" required id="username"/>
+                            <label asp-for="Username">Email Address</label>
+                            <span asp-validation-for="Username" class="text-danger small"></span>
                         </div>
 
                         <!-- Password Input -->
                         <div class="form-floating mb-3">
-                            <input asp-for="Password" type="password" class="form-control" placeholder="Password" required />
+                            <input id="password" asp-for="Password" type="password" class="form-control" placeholder="Password" required />
                             <label asp-for="Password">Password</label>
                             <span asp-validation-for="Password" class="text-danger small"></span>
                         </div>
@@ -55,3 +55,41 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+                // asp-action="Login" method="post"
+       $(document).ready(function () {
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var username = $('#username').val();
+            var password = $('#password').val();
+
+
+            console.log(username);
+
+            $.ajax({
+                method: "POST",
+                url: '@Url.Action("ValidateUser", "Account")',
+                // Pass as a standard JavaScript object instead of stringified JSON
+                data: { username: username, password: password },
+                success: function (response) {
+                    if (response.success) {
+                        window.location.href = '@Url.Action("Index", "Home")';
+
+                        alert("Welcome back, " + response.username + "!");
+
+    
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        });
+    });
+
+
+</script>
+
+

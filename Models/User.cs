@@ -7,6 +7,7 @@ namespace PENANO.Models // <-- Change this to your actual project namespace
         [Required(ErrorMessage = "Name is required")]
         [StringLength(50, ErrorMessage = "Name cannot exceed 50 characters")]
         public string Name { get; set; } = string.Empty;
+        public string Username { get; set; }
 
         [Required(ErrorMessage = "Email address is required")]
         [EmailAddress(ErrorMessage = "Invalid email address format")]

@@ -1,5 +1,11 @@
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using PENANO.Models;
+using System.Reflection;
+using Newtonsoft.Json.Linq; 
+
+
+
 
 namespace PENANO.Controllers
 {
@@ -56,5 +62,30 @@ namespace PENANO.Controllers
             // Your logout logic will go here later
             return RedirectToAction("Login");
         }
+
+
+
+
+        [HttpPost]
+        public JsonResult ValidateUser(string username, string password)
+        {
+            // Now you can use the raw parameters directly!
+            if (username == "jan" && password == "123")
+            {
+                TempData["res"] = "success";
+                return Json(new { success = true,  username });
+            }
+
+            return Json(new { success = false, message = "Invalid credentials." });
+        }
+
+        public class LoginResponse
+        {
+            public bool success { get; set; }
+            public string username { get; set; }
+            public string message { get; set; }
+        }
+
+
     }
 }
