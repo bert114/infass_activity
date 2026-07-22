@@ -1,4 +1,23 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function showModal(title, message, isSuccess = true, redirectUrl = null) {
+    // Set text
+    $('#themeModalLabel').text(title);
+    $('#themeModalMessage').text(message);
 
-// Write your JavaScript code.
+    // Dynamic icon styling
+    if (isSuccess) {
+        $('#modalIcon').attr('class', 'fas fa-check-circle text-theme-teal');
+    } else {
+        $('#modalIcon').attr('class', 'fas fa-exclamation-circle text-danger');
+    }
+
+    // Show modal
+    var modalInstance = new bootstrap.Modal(document.getElementById('themeModal'));
+    modalInstance.show();
+
+    // Handle button action or redirect
+    $('#btnModalConfirm').off('click').on('click', function () {
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        }
+    });
+}

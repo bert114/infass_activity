@@ -1,95 +1,111 @@
-﻿@model PENANO.Models.User // Make sure to replace this with your actual ViewModel namespace
+﻿@model PENANO.Models.LoginViewModel
 
-<div class="container">
-    <div class="row justify-content-center align-items-center min-vh-100 pt-xl-5">
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-body p-5">
+<section class="page-section" id="login">
+    <div class="container">
+        <!-- Section Heading -->
+        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Login</h2>
 
-                    <!-- Header -->
-                    <h2 class="text-center text-uppercase font-weight-bold mb-4">Login</h2>
+        <!-- Icon Divider -->
+        <div class="divider-custom">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
 
-                    <form id="loginForm">
-                        <!-- ASP.NET Validation Summary -->
-                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+        <!-- Login Form Container -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
 
-                        <!-- Email Input -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="Username" class="form-control" placeholder="Enter username" required id="username"/>
-                            <label asp-for="Username">Email Address</label>
-                            <span asp-validation-for="Username" class="text-danger small"></span>
-                        </div>
+                <div id="alertContainer"></div>
 
-                        <!-- Password Input -->
-                        <div class="form-floating mb-3">
-                            <input id="password" asp-for="Password" type="password" class="form-control" placeholder="Password" required />
-                            <label asp-for="Password">Password</label>
-                            <span asp-validation-for="Password" class="text-danger small"></span>
-                        </div>
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                }
 
-                        <!-- Remember Me Checkbox & Forgot Password -->
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="form-check">
-                                <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
-                                <label asp-for="RememberMe" class="form-check-label small text-muted">Remember me</label>
-                            </div>
-                            <a href="#" class="small text-decoration-none text-primary">Forgot password?</a>
-                        </div>
+                <form asp-action="Login" method="post" id="loginForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                        <!-- Submit Button -->
-                        <button class="btn btn-primary btn-lg w-100 text-uppercase rounded-pill shadow-sm" type="submit">
-                            Sign In
-                        </button>
-                    </form>
-
-                    <!-- Footer Link -->
-                    <div class="text-center mt-4">
-                        <p class="small mb-0 text-muted">
-                            Don't have an account?
-                            <a asp-controller="Home" asp-action="Register" class="text-decoration-none text-primary fw-bold">Register</a>
-                        </p>
+                    <!-- Username Field -->
+                    <div class="form-floating mb-3">
+                        <input asp-for="Username" id="Username" class="form-control" placeholder="Enter your username..." />
+                        <label asp-for="Username"></label>
+                        <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
 
-                </div>
+                    <!-- Password Field -->
+                    <div class="form-floating mb-3">
+                        <input asp-for="Password" id="Password" type="password" class="form-control" placeholder="Enter your password..." />
+                        <label asp-for="Password"></label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- Submit & Link -->
+                    <div class="d-flex align-items-center gap-3 mt-4">
+                        <button type="submit" class="btn btn-theme btn-xl">Login</button>
+                        <a asp-action="Register" class="text-theme-link">Need an account? Register</a>
+                    </div>
+                </form>
+
             </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Custom Pure HTML/CSS Modal -->
+<div id="manualModal" class="custom-modal-overlay">
+    <div class="custom-modal-card">
+        <!-- Icon Header -->
+        <div class="custom-modal-header">
+            <div id="manualModalIcon" class="custom-modal-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="custom-modal-body">
+            <h3 id="manualModalTitle" class="custom-modal-title">Success!</h3>
+            <p id="manualModalMessage" class="custom-modal-message">Your operation was completed successfully.</p>
+        </div>
+
+        <!-- Footer / Action Button -->
+        <div class="custom-modal-footer">
+            <button id="manualModalBtn" class="custom-modal-btn">Continue</button>
         </div>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-                // asp-action="Login" method="post"
-       $(document).ready(function () {
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault();
+@section Scripts {
+    <script src="~/js/utils.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#loginForm").on("submit", function (e) {
+                e.preventDefault(); 
 
-            var username = $('#username').val();
-            var password = $('#password').val();
+                var formData = {
+                    Username: $("#Username").val(),
+                    Password: $("#Password").val()
+                };
 
-
-            console.log(username);
-
-            $.ajax({
-                method: "POST",
-                url: '@Url.Action("ValidateUser", "Account")',
-                // Pass as a standard JavaScript object instead of stringified JSON
-                data: { username: username, password: password },
-                success: function (response) {
-                    if (response.success) {
-                        window.location.href = '@Url.Action("Index", "Home")';
-
-                        alert("Welcome back, " + response.username + "!");
-
-    
-                    } else {
-                        alert(response.message);
+                $.ajax({
+                    url: '@Url.Action("Login", "Account")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        if (response.success) {
+                            showManualModal("Success!", response.message, true, '@Url.Action("Index", "Home")');
+                        } else {
+                            showManualModal("Error", response.message, false);
+                        }
+                    },
+                    error: function () {
+                        showManualModal("Error", "An unexpected error occurred.", false);
                     }
-                }
+                });
             });
         });
-    });
-
-
-</script>
-
-
+    </script>
+}

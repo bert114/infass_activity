@@ -12412,6 +12412,7 @@ html {
 
 .page-section {
     padding: 6rem 0;
+    padding-top: 11rem !important;
 }
 
     .page-section .page-section-heading {
@@ -12659,3 +12660,217 @@ html {
 .copyright {
     background-color: #1a252f;
 }
+
+
+
+
+/* Color Palette */
+:root {
+    --theme-teal: #1abc9c;
+    --theme-teal-hover: #16a085;
+    --theme-navy: #2c3e50;
+    --theme-gray: #6c757d;
+}
+
+/* Page Section Styling */
+.page-section {
+    padding: 6rem 0;
+}
+
+.page-section-heading {
+    font-size: 2.25rem;
+    line-height: 2rem;
+    font-weight: 700;
+    color: var(--theme-navy);
+}
+
+/* Star Divider */
+.divider-custom {
+    margin: 1.25rem 0 2.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .divider-custom .divider-custom-line {
+        width: 100%;
+        max-width: 7rem;
+        height: 0.25rem;
+        background-color: var(--theme-navy);
+        border-radius: 1rem;
+        border-color: var(--theme-navy);
+    }
+
+    .divider-custom .divider-custom-icon {
+        color: var(--theme-navy);
+        font-size: 2rem;
+        padding: 0 1rem;
+    }
+
+/* Minimal Underline Floating Inputs (Freelancer Theme Style) */
+.form-floating > .form-control {
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 0;
+    box-shadow: none;
+    padding-left: 0;
+    background-color: transparent;
+}
+
+    .form-floating > .form-control:focus {
+        border-color: var(--theme-teal);
+        box-shadow: none;
+    }
+
+.form-floating > label {
+    padding-left: 0;
+    color: var(--theme-gray);
+}
+
+/* Theme Button */
+.btn-theme {
+    color: #ffffff;
+    background-color: var(--theme-teal);
+    border-color: var(--theme-teal);
+    border-radius: 0.5rem;
+    padding: 0.8rem 1.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+    .btn-theme:hover,
+    .btn-theme:focus {
+        color: #ffffff;
+        background-color: var(--theme-teal-hover);
+        border-color: var(--theme-teal-hover);
+    }
+
+/* Register Link */
+.text-theme-link {
+    color: var(--theme-teal);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+    .text-theme-link:hover {
+        color: var(--theme-teal-hover);
+        text-decoration: underline;
+    }
+
+
+
+
+/* Custom Theme Modal Styles */
+.modal-content {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.text-theme-teal {
+    color: #1abc9c !important;
+}
+
+.btn-theme {
+    color: #ffffff;
+    background-color: #1abc9c;
+    border-color: #1abc9c;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.15s ease-in-out;
+}
+
+    .btn-theme:hover,
+    .btn-theme:focus {
+        color: #ffffff;
+        background-color: #16a085;
+        border-color: #16a085;
+    }
+
+
+/* Full-screen Dark Overlay */
+.custom-modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(44, 62, 80, 0.7); /* Dark Navy Overlay */
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+
+    /* Modal Open State */
+    .custom-modal-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+
+/* Modal Content Card */
+.custom-modal-card {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 420px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: translateY(-20px);
+    transition: transform 0.25s ease-in-out;
+}
+
+.custom-modal-overlay.active .custom-modal-card {
+    transform: translateY(0);
+}
+
+/* Icon Styles */
+.custom-modal-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+    .custom-modal-icon.success {
+        color: #1abc9c; /* Theme Teal */
+    }
+
+    .custom-modal-icon.error {
+        color: #e74c3c; /* Red */
+    }
+
+/* Text Styles */
+.custom-modal-title {
+    color: #2c3e50; /* Theme Navy */
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.custom-modal-message {
+    color: #6c757d;
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Manual Theme Button */
+.custom-modal-btn {
+    background-color: #1abc9c;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+    .custom-modal-btn:hover {
+        background-color: #16a085;
+    }

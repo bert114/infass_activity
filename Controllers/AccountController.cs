@@ -1,91 +1,85 @@
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using PENANO.Models;
-using System.Reflection;
-using Newtonsoft.Json.Linq; 
+using PENANO.Repositories;
 
+namespace PENANO.Controllers;
 
-
-
-namespace PENANO.Controllers
+public class AccountController : Controller
 {
-    public class AccountController : Controller
+    private readonly IUserRepository _userRepo;
+
+    // Direct injection via Program.cs
+    public AccountController(IUserRepository userRepo)
     {
-        // 1. GET: /Account/Login
-        // This just displays the empty login page when the user navigates to it
-        [HttpGet]
-        public IActionResult Login()
-        {
-            // If a user is already logged in, send them straight to the homepage
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+        _userRepo = userRepo;
+    }
 
-            return View(new User());
+    // GET: /Account/Register
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+    // POST: /Account/Register
+    [HttpPost]
+    public IActionResult Register([FromBody] RegisterViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            // Collect validation errors if model state fails (e.g., passwords don't match)
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            return Json(new { success = false, message = string.Join("<br/>", errors) });
         }
 
-        // 2. POST: /Account/Login
-        // This handles processing the data when the user clicks the "Sign In" button
-        [HttpPost]
-        [ValidateAntiForgeryToken] // Protects your app from Cross-Site Request Forgery (CSRF) attacks
-        public IActionResult Login(User model)
+        var newUser = new User
         {
-            // First, check if the validation rules in your Model (like [Required]) pass
-            if (!ModelState.IsValid)
-            {
-                // If something is invalid, send them back to the login page 
-                // The form will automatically display the error messages
-                return View(model);
-            }
+            Username = model.Username,
+            Password = model.Password
+        };
 
-            // --- HARDCODED CREDENTIALS TEST ---
-            // Replace this block later with your actual database/Identity authentication logic!
-            if (model.Email == "admin@gmail.com" && model.Password == "123")
-            {
-                // Success! Redirect them to your main landing/portfolio page
-
-                TempData["res"] = "success";
-                return RedirectToAction("Index", "Home");
-            }
-
-            // If the code reaches here, the email or password was incorrect
-            ModelState.AddModelError(string.Empty, "Invalid email address or password.");
-
-            // Return the model back to the view so their typed email stays in the box
-            return View(model);
+        if (_userRepo.Create(newUser))
+        {
+            return Json(new { success = true, message = "Registration successful! You can now log in." });
         }
 
-        // 3. GET: /Account/Logout
-        public IActionResult Logout()
+        return Json(new { success = false, message = "Username is already taken." });
+    }
+
+    // GET: /Account/Login
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    // POST: /Account/Login
+    [HttpPost]
+    public IActionResult Login([FromBody] LoginViewModel model) // Or without [FromBody] depending on how data is sent
+    {
+        if (!ModelState.IsValid)
         {
-            // Your logout logic will go here later
-            return RedirectToAction("Login");
+            return Json(new { success = false, message = "Please fill in all required fields." });
         }
 
-
-
-
-        [HttpPost]
-        public JsonResult ValidateUser(string username, string password)
+        if (_userRepo.ValidateUser(model.Username, model.Password))
         {
-            // Now you can use the raw parameters directly!
-            if (username == "jan" && password == "123")
-            {
-                TempData["res"] = "success";
-                return Json(new { success = true,  username });
-            }
+           
+            HttpContext.Session.SetString("User", model.Username);
 
-            return Json(new { success = false, message = "Invalid credentials." });
+            return Json(new { success = true, message = "successfully login" });
         }
 
-        public class LoginResponse
-        {
-            public bool success { get; set; }
-            public string username { get; set; }
-            public string message { get; set; }
-        }
+        return Json(new { success = false, message = "Invalid username or password." });
+    }
 
-
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return RedirectToAction("Login");
     }
 }

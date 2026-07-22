@@ -1,0 +1,108 @@
+﻿@model PENANO.Models.RegisterViewModel
+
+<section class="page-section" id="register" style="padding-top: 12rem;">
+    <div class="container">
+        <!-- Section Heading -->
+        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Register</h2>
+
+        <!-- Icon Divider -->
+        <div class="divider-custom">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+
+        <!-- Register Form Container -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+
+                <!-- Alert Message Container -->
+                <div id="alertContainer"></div>
+
+                <form asp-action="Register" method="post" id="registerForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Username Field -->
+                    <div class="form-floating mb-3">
+                        <input asp-for="Username" id="Username" class="form-control" placeholder="Enter your username..." />
+                        <label asp-for="Username"></label>
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-floating mb-3">
+                        <input asp-for="Password" id="Password" type="password" class="form-control" placeholder="Enter your password..." />
+                        <label asp-for="Password"></label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="form-floating mb-3">
+                        <input asp-for="ConfirmPassword" id="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password..." />
+                        <label asp-for="ConfirmPassword"></label>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <!-- Submit & Link -->
+                    <div class="d-flex align-items-center gap-3 mt-4">
+                        <button type="submit" class="btn btn-theme btn-xl">Register</button>
+                        <a asp-action="Login" class="text-theme-link">Already have an account? Login</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#registerForm").on("submit", function (e) {
+                e.preventDefault(); // Stop standard form submission
+
+                // Pre-check if passwords match on front-end before hitting backend
+                var password = $("#Password").val();
+                var confirmPassword = $("#ConfirmPassword").val();
+
+                if (password !== confirmPassword) {
+                    $("#alertContainer").html(
+                        '<div class="alert alert-danger">Passwords do not match!</div>'
+                    );
+                    return;
+                }
+
+                var formData = {
+                    Username: $("#Username").val(),
+                    Password: password,
+                    ConfirmPassword: confirmPassword
+                };
+
+                $.ajax({
+                    url: '@Url.Action("Register", "Account")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        if (response.success) {
+                            // Show alert on success
+                            alert(response.message);
+
+                            // Redirect user directly to Login page
+                            window.location.href = '@Url.Action("Login", "Account")';
+                        } else {
+                            // Display error message (e.g. Username already taken)
+                            $("#alertContainer").html(
+                                '<div class="alert alert-danger">' + response.message + '</div>'
+                            );
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while registering the account.");
+                    }
+                });
+            });
+        });
+    </script>
+}
