@@ -14,6 +14,7 @@ builder.Services.AddSession(options =>
 // 2. Register Repository as Singleton to keep the list alive across requests
 builder.Services.AddSingleton<IUserRepository, InMemoryUserRepository>();
 
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -21,6 +22,10 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+builder.Services.AddSession(); 
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

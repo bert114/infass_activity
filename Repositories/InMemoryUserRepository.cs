@@ -18,7 +18,7 @@ public class InMemoryUserRepository : IUserRepository
     public bool Create(User user)
     {
         if (GetByUsername(user.Username) != null)
-            return false; // User already exists
+            return false;
 
         user.Id = _users.Count + 1;
         _users.Add(user);
@@ -29,5 +29,19 @@ public class InMemoryUserRepository : IUserRepository
     {
         return _users.Any(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)
                             && u.Password == password);
+    }
+
+    public void AddInMemoryUser(string username, string password)
+    {
+        var existingUser = GetByUsername(username);
+        if (existingUser == null)
+        {
+            _users.Add(new User
+            {
+                Id = _users.Count + 1,
+                Username = username,
+                Password = password
+            });
+        }
     }
 }

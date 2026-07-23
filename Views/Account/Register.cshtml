@@ -55,52 +55,62 @@
     </div>
 </section>
 
+
+
+<!-- Custom Pure HTML/CSS Modal -->
+<div id="manualModal" class="custom-modal-overlay">
+    <div class="custom-modal-card">
+        <!-- Icon Header -->
+        <div class="custom-modal-header">
+            <div id="manualModalIcon" class="custom-modal-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="custom-modal-body">
+            <h3 id="manualModalTitle" class="custom-modal-title">Success!</h3>
+            <p id="manualModalMessage" class="custom-modal-message">Your operation was completed successfully.</p>
+        </div>
+
+        <!-- Footer / Action Button -->
+        <div class="custom-modal-footer">
+            <button id="manualModalBtn" class="custom-modal-btn">Continue</button>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
+    <script src="~/js/utils.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+
+
     <script>
         $(document).ready(function () {
             $("#registerForm").on("submit", function (e) {
-                e.preventDefault(); // Stop standard form submission
-
-                // Pre-check if passwords match on front-end before hitting backend
-                var password = $("#Password").val();
-                var confirmPassword = $("#ConfirmPassword").val();
-
-                if (password !== confirmPassword) {
-                    $("#alertContainer").html(
-                        '<div class="alert alert-danger">Passwords do not match!</div>'
-                    );
-                    return;
-                }
-
-                var formData = {
-                    Username: $("#Username").val(),
-                    Password: password,
-                    ConfirmPassword: confirmPassword
-                };
+                e.preventDefault();
 
                 $.ajax({
                     url: '@Url.Action("Register", "Account")',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    success: function (response) {
-                        if (response.success) {
-                            // Show alert on success
-                            alert(response.message);
-
-                            // Redirect user directly to Login page
-                            window.location.href = '@Url.Action("Login", "Account")';
-                        } else {
-                            // Display error message (e.g. Username already taken)
-                            $("#alertContainer").html(
-                                '<div class="alert alert-danger">' + response.message + '</div>'
-                            );
-                        }
+                    method: 'POST',
+                    data: {
+                        "Username": $("#Username").val(),
+                        "Password": $("#Password").val(),
                     },
-                    error: function () {
-                        alert("An error occurred while registering the account.");
-                    }
+
+                    success: function (response) {
+
+                        console.log(response);
+
+                        showManualModal("Success", `SQL INSERTED QUERY: ${response.message}`);
+
+                        setTimeout(function () {
+                            window.location.href = '@Url.Action("Login", "Account")';
+                        }, 5000);
+                     
+                    },
+                
                 });
             });
         });

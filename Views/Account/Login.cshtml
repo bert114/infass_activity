@@ -43,7 +43,7 @@
                     <!-- Submit & Link -->
                     <div class="d-flex align-items-center gap-3 mt-4">
                         <button type="submit" class="btn btn-theme btn-xl">Login</button>
-                        <a asp-action="Register" class="text-theme-link">Need an account? Register</a>
+                        <a href="/Account/Register" class="text-theme-link">Need an account? Register</a>
                     </div>
                 </form>
 
@@ -84,22 +84,22 @@
             $("#loginForm").on("submit", function (e) {
                 e.preventDefault(); 
 
-                var formData = {
-                    Username: $("#Username").val(),
-                    Password: $("#Password").val()
-                };
+            
 
                 $.ajax({
                     url: '@Url.Action("Login", "Account")',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
+                    method: 'POST',
+                    data: {
+                        "Username": $("#Username").val(),
+                        "Password": $("#Password").val(),
+                    },
                     success: function (response) {
                         if (response.success) {
                             showManualModal("Success!", response.message, true, '@Url.Action("Index", "Home")');
                         } else {
                             showManualModal("Error", response.message, false);
                         }
+
                     },
                     error: function () {
                         showManualModal("Error", "An unexpected error occurred.", false);

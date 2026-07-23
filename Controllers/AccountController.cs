@@ -21,33 +21,36 @@ public class AccountController : Controller
         return View();
     }
 
+
     // POST: /Account/Register
     [HttpPost]
-    public IActionResult Register([FromBody] RegisterViewModel model)
+    [Route("newuser")]
+    public IActionResult Register(string username, string password)
     {
-        if (!ModelState.IsValid)
-        {
-            // Collect validation errors if model state fails (e.g., passwords don't match)
-            var errors = ModelState.Values
-                .SelectMany(v => v.Errors)
-                .Select(e => e.ErrorMessage)
-                .ToList();
 
-            return Json(new { success = false, message = string.Join("<br/>", errors) });
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        {
+            return Json(new { success = false, message = "Username and password are required." });
         }
 
-        var newUser = new User
+        string[] userValues = new string[]
         {
-            Username = model.Username,
-            Password = model.Password
+            username,
+            password
         };
 
-        if (_userRepo.Create(newUser))
-        {
-            return Json(new { success = true, message = "Registration successful! You can now log in." });
-        }
+        string query = PENANO.Models.RegisterViewModel.DisplayQuery("Users", userValues);
 
-        return Json(new { success = false, message = "Username is already taken." });
+        _userRepo.AddInMemoryUser(username, password);
+
+        HttpContext.Session.SetString("User", username);
+
+
+        
+
+        return Json(new { success = true, message = query });
+
+        
     }
 
     // GET: /Account/Login
@@ -59,18 +62,16 @@ public class AccountController : Controller
 
     // POST: /Account/Login
     [HttpPost]
-    public IActionResult Login([FromBody] LoginViewModel model) // Or without [FromBody] depending on how data is sent
+    public IActionResult Login(LoginViewModel model) 
     {
-        if (!ModelState.IsValid)
+        if (model == null || !ModelState.IsValid)
         {
             return Json(new { success = false, message = "Please fill in all required fields." });
         }
 
         if (_userRepo.ValidateUser(model.Username, model.Password))
         {
-           
             HttpContext.Session.SetString("User", model.Username);
-
             return Json(new { success = true, message = "successfully login" });
         }
 
