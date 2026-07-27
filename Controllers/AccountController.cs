@@ -33,27 +33,31 @@ public class AccountController : Controller
             return Json(new { success = false, message = "Username and password are required." });
         }
 
-        string[] userValues = new string[]
-        {
-            username,
-            password
-        };
+        
 
-        string query = PENANO.Models.RegisterViewModel.DisplayQuery("Users", userValues);
+        string[] fields = { "Username", "Password" };
+        string[] userValues = { username, password };
+
+
+        string query = PENANO.Models.RegisterViewModel.DisplayQuery("Users", userValues, fields);
+
+
+
+
+
+
+
 
         _userRepo.AddInMemoryUser(username, password);
 
         HttpContext.Session.SetString("User", username);
-
-
-        
 
         return Json(new { success = true, message = query });
 
         
     }
 
-    // GET: /Account/Login
+
     [HttpGet]
     public IActionResult Login()
     {

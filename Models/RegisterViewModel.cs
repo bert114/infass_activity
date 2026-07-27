@@ -23,22 +23,32 @@ namespace PENANO.Models
 
 
 
-        public static string DisplayQuery(string table_name, string[] value)
+        public static string DisplayQuery(string table_name, string[] values, string[] fields)
         {
-            string values = "";
+            string CleanValues = "";
+            string CleanFields = "";
 
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < fields.Length; i++)
             {
-                 values += value[i];
-                
+                CleanFields += fields[i];
 
-                if (i < value.Length - 1)
+                if (i < fields.Length - 1)
                 {
-                    values += ", ";
+                    CleanFields += ", ";
                 }
             }
 
-            return $"INSERT INTO {table_name} VALUES({values})";
+            for (int i = 0; i < values.Length; i++)
+            {
+                CleanValues += values[i];
+
+                if (i < values.Length - 1)
+                {
+                    CleanValues += ", ";
+                }
+            }
+
+            return $"INSERT INTO {table_name} ({CleanFields}) \n VALUES ({CleanValues});";
         }
     }
  };

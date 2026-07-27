@@ -101,13 +101,15 @@
 
                     success: function (response) {
 
-                        console.log(response);
+                        
+                        alert(`SQL INSERTED QUERY: ${response.message}`)
 
                         showManualModal("Success", `SQL INSERTED QUERY: ${response.message}`);
 
                         setTimeout(function () {
                             window.location.href = '@Url.Action("Login", "Account")';
-                        }, 5000);
+                        }, 7000);
+
                      
                     },
                 

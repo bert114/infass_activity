@@ -6,13 +6,11 @@ $(document).ready(function () {
         var $globalBox = $("#globalErrorBox");
         var $errorList = $("#errorList");
 
-        // Reset old visual validation elements
         $globalBox.addClass("d-none");
         $errorList.empty();
         $(".validation-msg").text("");
 
         try {
-            // Safely extract values and construct the JSON payload
             var payloadData = {
                 Name: $("#Name").val(),
                 Email: $("#Email").val(),
