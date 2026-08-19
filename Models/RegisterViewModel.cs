@@ -17,38 +17,91 @@ namespace PENANO.Models
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
+        public string Email { get; set; } = string.Empty;
 
 
-
-
-
-
-        public static string DisplayQuery(string table_name, string[] values, string[] fields)
+        // CREATE (INSERT)
+        public static string GenerateInsertQuery(string tableName, string[] fields, string[] values)
         {
-            string CleanValues = "";
-            string CleanFields = "";
+            string cleanFields = "";
+            string cleanValues = "";
 
             for (int i = 0; i < fields.Length; i++)
             {
-                CleanFields += fields[i];
-
+                cleanFields += fields[i];
                 if (i < fields.Length - 1)
                 {
-                    CleanFields += ", ";
+                    cleanFields += ", ";
                 }
             }
 
             for (int i = 0; i < values.Length; i++)
             {
-                CleanValues += values[i];
-
+                cleanValues += $"'{values[i]}'";
                 if (i < values.Length - 1)
                 {
-                    CleanValues += ", ";
+                    cleanValues += ", ";
                 }
             }
 
-            return $"INSERT INTO {table_name} ({CleanFields}) \n VALUES ({CleanValues});";
+            return $"INSERT INTO {tableName} ({cleanFields}) \nVALUES ({cleanValues});";
         }
+
+        // READ (SELECT)
+        public static string GenerateSelectQuery(string tableName, string[] columns, string whereClause = "")
+        {
+            string cleanColumns = "";
+
+            if (columns == null || columns.Length == 0)
+            {
+                cleanColumns = "*";
+            }
+            else
+            {
+                for (int i = 0; i < columns.Length; i++)
+                {
+                    cleanColumns += columns[i];
+                    if (i < columns.Length - 1)
+                    {
+                        cleanColumns += ", ";
+                    }
+                }
+            }
+
+            string formattedWhere = string.IsNullOrWhiteSpace(whereClause) ? "" : $"\nWHERE {whereClause}";
+
+            return $"SELECT {cleanColumns} \nFROM {tableName}{formattedWhere};";
+        }
+
+        // UPDATE
+        public static string GenerateUpdateQuery(string tableName, string[] fields, string[] values, string whereClause)
+        {
+            string columnValuePairs = "";
+
+            for (int i = 0; i < fields.Length; i++)
+            {
+                columnValuePairs += $"{fields[i]} = '{values[i]}'";
+                if (i < fields.Length - 1)
+                {
+                    columnValuePairs += ", ";
+                }
+            }
+
+            string formattedWhere = string.IsNullOrWhiteSpace(whereClause) ? "" : $"\nWHERE {whereClause}";
+
+            return $"UPDATE {tableName} \nSET {columnValuePairs}{formattedWhere};";
+        }
+
+        // DELETE
+        public static string GenerateDeleteQuery(string tableName, string whereClause)
+        {
+            string formattedWhere = string.IsNullOrWhiteSpace(whereClause) ? "" : $"\nWHERE {whereClause}";
+
+            return $"DELETE FROM {tableName}{formattedWhere};";
+        }
+
+
+
+
     }
  };

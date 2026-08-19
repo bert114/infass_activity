@@ -1,51 +1,45 @@
 ﻿@model PENANO.Models.RegisterViewModel
 
+
+
 <section class="page-section" id="register" style="padding-top: 12rem;">
     <div class="container">
-        <!-- Section Heading -->
         <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Register</h2>
 
-        <!-- Icon Divider -->
         <div class="divider-custom">
             <div class="divider-custom-line"></div>
             <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
             <div class="divider-custom-line"></div>
         </div>
 
-        <!-- Register Form Container -->
         <div class="row justify-content-center">
             <div class="col-lg-8 col-xl-7">
 
-                <!-- Alert Message Container -->
                 <div id="alertContainer"></div>
 
                 <form asp-action="Register" method="post" id="registerForm">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                    <!-- Username Field -->
                     <div class="form-floating mb-3">
                         <input asp-for="Username" id="Username" class="form-control" placeholder="Enter your username..." />
                         <label asp-for="Username"></label>
                         <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
 
-                    <!-- Password Field -->
+                    <div class="form-floating mb-3">
+                        <input asp-for="Email" id="Email" type="email" class="form-control" placeholder="Enter your email..." />
+                        <label asp-for="Email"></label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
                     <div class="form-floating mb-3">
                         <input asp-for="Password" id="Password" type="password" class="form-control" placeholder="Enter your password..." />
                         <label asp-for="Password"></label>
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
-                    <!-- Confirm Password Field -->
-                    <div class="form-floating mb-3">
-                        <input asp-for="ConfirmPassword" id="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password..." />
-                        <label asp-for="ConfirmPassword"></label>
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                    </div>
-
-                    <!-- Submit & Link -->
                     <div class="d-flex align-items-center gap-3 mt-4">
-                        <button type="submit" class="btn btn-theme btn-xl">Register</button>
+                        <button type="submit" class="btn btn-theme btn-xl">Submit</button>
                         <a asp-action="Login" class="text-theme-link">Already have an account? Login</a>
                     </div>
                 </form>
@@ -54,8 +48,6 @@
         </div>
     </div>
 </section>
-
-
 
 <!-- Custom Pure HTML/CSS Modal -->
 <div id="manualModal" class="custom-modal-overlay">
@@ -83,8 +75,6 @@
 @section Scripts {
     <script src="~/js/utils.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-   
-
 
     <script>
         $(document).ready(function () {
@@ -92,27 +82,23 @@
                 e.preventDefault();
 
                 $.ajax({
-                    url: '@Url.Action("Register", "Account")',
+                    url: '/Delete',
                     method: 'POST',
                     data: {
                         "Username": $("#Username").val(),
-                        "Password": $("#Password").val(),
+                        "Email": $("#Email").val(),
+                        "Password": $("#Password").val()
                     },
 
                     success: function (response) {
+                        alert(`SQL INSERTED QUERY: ${response.query}`);
 
-                        
-                        alert(`SQL INSERTED QUERY: ${response.message}`)
-
-                        showManualModal("Success", `SQL INSERTED QUERY: ${response.message}`);
+                        showManualModal("Success", `SQL INSERTED QUERY: ${response.query}`);
 
                         setTimeout(function () {
                             window.location.href = '@Url.Action("Login", "Account")';
-                        }, 7000);
-
-                     
-                    },
-                
+                        }, 5000);
+                    }
                 });
             });
         });

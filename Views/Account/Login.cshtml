@@ -1,5 +1,10 @@
 ﻿@model PENANO.Models.LoginViewModel
 
+
+
+
+
+
 <section class="page-section" id="login">
     <div class="container">
         <!-- Section Heading -->
@@ -53,6 +58,10 @@
 </section>
 
 
+
+
+
+
 <!-- Custom Pure HTML/CSS Modal -->
 <div id="manualModal" class="custom-modal-overlay">
     <div class="custom-modal-card">
@@ -84,8 +93,6 @@
             $("#loginForm").on("submit", function (e) {
                 e.preventDefault(); 
 
-            
-
                 $.ajax({
                     url: '@Url.Action("Login", "Account")',
                     method: 'POST',
@@ -93,6 +100,8 @@
                         "Username": $("#Username").val(),
                         "Password": $("#Password").val(),
                     },
+
+
                     success: function (response) {
                         if (response.success) {
                             showManualModal("Success!", response.message, true, '@Url.Action("Index", "Home")');
@@ -109,3 +118,8 @@
         });
     </script>
 }
+
+
+
+
+

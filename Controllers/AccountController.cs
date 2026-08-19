@@ -8,23 +8,32 @@ public class AccountController : Controller
 {
     private readonly IUserRepository _userRepo;
 
-    // Direct injection via Program.cs
     public AccountController(IUserRepository userRepo)
     {
         _userRepo = userRepo;
     }
 
-    // GET: /Account/Register
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+
+
     [HttpGet]
     public IActionResult Register()
     {
         return View();
     }
 
+    string tableName = "User";
+
 
     // POST: /Account/Register
     [HttpPost]
-    [Route("newuser")]
+    [Route("/Register")]
+
     public IActionResult Register(string username, string password)
     {
 
@@ -33,40 +42,65 @@ public class AccountController : Controller
             return Json(new { success = false, message = "Username and password are required." });
         }
 
-        
-
         string[] fields = { "Username", "Password" };
         string[] userValues = { username, password };
 
+        string query = RegisterViewModel.GenerateInsertQuery(
+            tableName,
+            fields,
+            userValues
+        );
 
-        string query = PENANO.Models.RegisterViewModel.DisplayQuery("Users", userValues, fields);
-
-
-
-
-
-
-
-
-        _userRepo.AddInMemoryUser(username, password);
-
-        HttpContext.Session.SetString("User", username);
-
-        return Json(new { success = true, message = query });
-
-        
+        return Json(new { success = true, query });
     }
 
 
-    [HttpGet]
-    public IActionResult Login()
+    
+    
+
+
+
+
+    // POST: /Account/UpdateUser
+    [HttpPost]
+    [Route("Update")]
+    public IActionResult UpdateUser(string username, string email, string password)
     {
-        return View();
+        string[] fields = { "Email", "Password" };
+        string[] userValues = { email, password };
+        string whereClause = $"Username = '{username}'";
+
+        string query = RegisterViewModel.GenerateUpdateQuery(
+            tableName,
+            fields,
+            userValues,
+            whereClause
+        );
+
+        return Json(new { success = true, query });
     }
+
+    // POST: /Account/DeleteUser
+    [HttpPost]
+    [Route("Delete")]
+    public IActionResult DeleteUser(string username)
+    {
+
+        string whereClause = $"Username = '{username}'";
+
+        string query = RegisterViewModel.GenerateDeleteQuery(
+            tableName,
+            whereClause
+        );
+
+        return Json(new { success = true, query });
+    }
+
+
 
     // POST: /Account/Login
     [HttpPost]
-    public IActionResult Login(LoginViewModel model) 
+    public IActionResult Login(LoginViewModel model)
     {
         if (model == null || !ModelState.IsValid)
         {
@@ -82,9 +116,7 @@ public class AccountController : Controller
         return Json(new { success = false, message = "Invalid username or password." });
     }
 
-    public IActionResult Logout()
-    {
-        HttpContext.Session.Clear();
-        return RedirectToAction("Login");
-    }
+
+
+
 }
