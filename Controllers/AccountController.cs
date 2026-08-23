@@ -1,16 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using PENANO.Helpers;
 using PENANO.Models;
 using PENANO.Repositories;
+using static PENANO.Helpers.UserHelper;
 
 namespace PENANO.Controllers;
 
 public class AccountController : Controller
 {
     private readonly IUserRepository _userRepo;
+    private readonly string? _connectionString;
 
-    public AccountController(IUserRepository userRepo)
+
+    public AccountController(IUserRepository userRepo, IConfiguration con)
     {
         _userRepo = userRepo;
+        _connectionString = con.GetConnectionString("myLenovoConnectionString");
     }
 
     [HttpGet]
@@ -27,38 +33,41 @@ public class AccountController : Controller
         return View();
     }
 
-    string tableName = "User";
+    string tableName = "users";
 
 
     // insertUserQuery
     [HttpPost]
     [Route("/Register")]
-
-    public IActionResult Register(string username, string password)
+    public IActionResult Register(string username,string email, string password)
     {
+        string[] fields = { "Username", "Email", "Password" };
+        string[] userValues = { username, email, password };
 
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-        {
-            return Json(new { success = false, message = "Username and password are required." });
-        }
-
-        string[] fields = { "Username", "Password" };
-        string[] userValues = { username, password };
-
-        string query = RegisterViewModel.buildInsertQuery(
+        string sqlCommand = RegisterViewModel.buildInsertQuery(
             tableName,
             fields,
             userValues
         );
 
-        return Json(new { success = true, query });
+        try
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sqlCommand, conn))
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            return sendResponse(true, "Registered Successfully");
+        }
+        catch (Exception ex)
+        {
+            return sendResponse(false, ex.Message);
+        }
     }
-
-
-    
-    
-
-
 
 
     //UpdateUserQuery

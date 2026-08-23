@@ -88,13 +88,17 @@
                     },
 
                     success: function (response) {
-                        alert(`SQL INSERTED QUERY: ${response.query}`);
 
-                        showManualModal("Success", `SQL INSERTED QUERY: ${response.query}`);
+                        console.log(response);
+                        alert(`SQL INSERTED QUERY: ${response.message}`);
 
-                        setTimeout(function () {
-                            window.location.href = '@Url.Action("Login", "Account")';
-                        }, 5000);
+
+                        showManualModal(
+                            response.success ? 'Success!' : 'Registration Failed',
+                            response.message,
+                            response.success,
+                            response.success ? '/Account/Login' : null
+                        );
                     }
                 });
             });

@@ -5,8 +5,15 @@
     var modalIcon = document.getElementById('manualModalIcon');
     var modalBtn = document.getElementById('manualModalBtn');
 
-    modalTitle.textContent = title;
-    modalMessage.textContent = message;
+    var friendlyMessage = message;
+    if (typeof message === 'string' && message.includes('UNIQUE KEY constraint')) {
+        var match = message.match(/\(([^)]+)\)/);
+        var duplicateValue = match ? match[1] : 'This value';
+        friendlyMessage = `${duplicateValue} is already registered. Please use a different one.`;
+    }
+
+    modalTitle.textContent = title || (isSuccess ? 'Success' : 'Error');
+    modalMessage.textContent = friendlyMessage;
 
     if (isSuccess) {
         modalIcon.className = 'custom-modal-icon success';
