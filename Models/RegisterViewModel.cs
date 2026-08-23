@@ -12,16 +12,13 @@ namespace PENANO.Models
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Confirm Password is required")]
-        [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
         public string Email { get; set; } = string.Empty;
 
 
         // CREATE (INSERT)
-        public static string GenerateInsertQuery(string tableName, string[] fields, string[] values)
+        public static string buildInsertQuery(string tableName, string[] fields, string[] values)
         {
             string cleanFields = "";
             string cleanValues = "";
@@ -48,7 +45,7 @@ namespace PENANO.Models
         }
 
         // READ (SELECT)
-        public static string GenerateSelectQuery(string tableName, string[] columns, string whereClause = "")
+        public static string buildSelectQuery(string tableName, string[] columns, string whereClause = "")
         {
             string cleanColumns = "";
 
@@ -74,7 +71,7 @@ namespace PENANO.Models
         }
 
         // UPDATE
-        public static string GenerateUpdateQuery(string tableName, string[] fields, string[] values, string whereClause)
+        public static string buildUpdateQuery(string tableName, string[] fields, string[] values, string whereClause)
         {
             string columnValuePairs = "";
 
@@ -93,7 +90,7 @@ namespace PENANO.Models
         }
 
         // DELETE
-        public static string GenerateDeleteQuery(string tableName, string whereClause)
+        public static string buildDeleteQuery(string tableName, string whereClause)
         {
             string formattedWhere = string.IsNullOrWhiteSpace(whereClause) ? "" : $"\nWHERE {whereClause}";
 

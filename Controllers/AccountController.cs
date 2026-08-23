@@ -30,7 +30,7 @@ public class AccountController : Controller
     string tableName = "User";
 
 
-    // POST: /Account/Register
+    // insertUserQuery
     [HttpPost]
     [Route("/Register")]
 
@@ -45,7 +45,7 @@ public class AccountController : Controller
         string[] fields = { "Username", "Password" };
         string[] userValues = { username, password };
 
-        string query = RegisterViewModel.GenerateInsertQuery(
+        string query = RegisterViewModel.buildInsertQuery(
             tableName,
             fields,
             userValues
@@ -61,7 +61,7 @@ public class AccountController : Controller
 
 
 
-    // POST: /Account/UpdateUser
+    //UpdateUserQuery
     [HttpPost]
     [Route("Update")]
     public IActionResult UpdateUser(string username, string email, string password)
@@ -70,7 +70,7 @@ public class AccountController : Controller
         string[] userValues = { email, password };
         string whereClause = $"Username = '{username}'";
 
-        string query = RegisterViewModel.GenerateUpdateQuery(
+        string query = RegisterViewModel.buildUpdateQuery(
             tableName,
             fields,
             userValues,
@@ -80,7 +80,7 @@ public class AccountController : Controller
         return Json(new { success = true, query });
     }
 
-    // POST: /Account/DeleteUser
+    //DeleteUserQuery
     [HttpPost]
     [Route("Delete")]
     public IActionResult DeleteUser(string username)
@@ -88,7 +88,7 @@ public class AccountController : Controller
 
         string whereClause = $"Username = '{username}'";
 
-        string query = RegisterViewModel.GenerateDeleteQuery(
+        string query = RegisterViewModel.buildDeleteQuery(
             tableName,
             whereClause
         );
@@ -97,8 +97,6 @@ public class AccountController : Controller
     }
 
 
-
-    // POST: /Account/Login
     [HttpPost]
     public IActionResult Login(LoginViewModel model)
     {

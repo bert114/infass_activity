@@ -49,23 +49,20 @@
     </div>
 </section>
 
-<!-- Custom Pure HTML/CSS Modal -->
+@* modal *@
 <div id="manualModal" class="custom-modal-overlay">
     <div class="custom-modal-card">
-        <!-- Icon Header -->
         <div class="custom-modal-header">
             <div id="manualModalIcon" class="custom-modal-icon success">
                 <i class="fas fa-check-circle"></i>
             </div>
         </div>
 
-        <!-- Content -->
         <div class="custom-modal-body">
             <h3 id="manualModalTitle" class="custom-modal-title">Success!</h3>
             <p id="manualModalMessage" class="custom-modal-message">Your operation was completed successfully.</p>
         </div>
 
-        <!-- Footer / Action Button -->
         <div class="custom-modal-footer">
             <button id="manualModalBtn" class="custom-modal-btn">Continue</button>
         </div>
@@ -82,7 +79,7 @@
                 e.preventDefault();
 
                 $.ajax({
-                    url: '/Delete',
+                    url: '/Register',
                     method: 'POST',
                     data: {
                         "Username": $("#Username").val(),

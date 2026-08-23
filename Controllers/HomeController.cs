@@ -30,8 +30,7 @@ namespace PENANO.Controllers
         }
 
 
-        // 3. GET: /Home/Register
-        // Displays the registration page
+       
         [HttpGet]
         public IActionResult Register()
         {
