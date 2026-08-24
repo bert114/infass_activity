@@ -13,6 +13,7 @@ public class AccountController : Controller
 {
     private readonly IUserRepository _userRepo;
     private readonly string? _connectionString;
+    private static int attempt = 0;
 
 
     public AccountController(IUserRepository userRepo, IConfiguration con)
@@ -113,6 +114,8 @@ public class AccountController : Controller
     [Route("/Login")]
     public IActionResult Login(string email, string password)
     {
+        if (attempt >= 3) return sendResponse(false, "Too many login attempts try again later");
+        
         try
         {
             using var connection = new SqlConnection(_connectionString);
@@ -127,7 +130,13 @@ public class AccountController : Controller
             connection.Open();
             using var reader = command.ExecuteReader();
 
-            if (!reader.Read()) return sendResponse(false, "Invalid email or password.");
+            if (!reader.Read())
+            {
+                attempt++;
+                return sendResponse(false, "Invalid email or password.");
+            }
+
+            attempt = 0;
 
             return sendResponse(true, "Login successful!");
         }
@@ -136,8 +145,5 @@ public class AccountController : Controller
             return sendResponse(false, ex.Message);
         }
     }
-
-
-
 
 }
