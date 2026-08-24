@@ -40,7 +40,9 @@
 
                     <div class="d-flex align-items-center gap-3 mt-4">
                         <button type="submit" class="btn btn-theme btn-xl">Submit</button>
-                        <a asp-action="Login" class="text-theme-link">Already have an account? Login</a>
+
+                        <a href="/Account/Login" class="text-theme-link">Need an account? Register</a>
+
                     </div>
                 </form>
 
@@ -97,7 +99,7 @@
                             response.success ? 'Success!' : 'Registration Failed',
                             response.message,
                             response.success,
-                            response.success ? '/Account/Login' : null
+                             null
                         );
                     }
                 });

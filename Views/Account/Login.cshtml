@@ -31,11 +31,11 @@
                 <form asp-action="Login" method="post" id="loginForm">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                    <!-- Username Field -->
+                    <!-- Email Field -->
                     <div class="form-floating mb-3">
-                        <input asp-for="Username" id="Username" class="form-control" placeholder="Enter your username..." />
-                        <label asp-for="Username"></label>
-                        <span asp-validation-for="Username" class="text-danger"></span>
+                        <input asp-for="Email" id="Email" class="form-control" placeholder="Enter your username..." />
+                        <label asp-for="Email"></label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
                     <!-- Password Field -->
@@ -94,15 +94,16 @@
                 e.preventDefault(); 
 
                 $.ajax({
-                    url: '@Url.Action("Login", "Account")',
+                    url: '/Login',
                     method: 'POST',
                     data: {
-                        "Username": $("#Username").val(),
+                        "Email": $("#Email").val(),
                         "Password": $("#Password").val(),
                     },
 
 
                     success: function (response) {
+                        console.log(response);
                         if (response.success) {
                             showManualModal("Success!", response.message, true, '@Url.Action("Index", "Home")');
                         } else {
@@ -110,6 +111,7 @@
                         }
 
                     },
+
                     error: function () {
                         showManualModal("Error", "An unexpected error occurred.", false);
                     }

@@ -10,5 +10,7 @@ namespace PENANO.Models // <-- Change this to your actual project namespace
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+
     }
 }

@@ -3,7 +3,9 @@ using Microsoft.Data.SqlClient;
 using PENANO.Helpers;
 using PENANO.Models;
 using PENANO.Repositories;
+using System.Data;
 using static PENANO.Helpers.UserHelper;
+using static PENANO.Helpers.AuthHelper;
 
 namespace PENANO.Controllers;
 
@@ -106,21 +108,33 @@ public class AccountController : Controller
     }
 
 
+
     [HttpPost]
-    public IActionResult Login(LoginViewModel model)
+    [Route("/Login")]
+    public IActionResult Login(string email, string password)
     {
-        if (model == null || !ModelState.IsValid)
+        try
         {
-            return Json(new { success = false, message = "Please fill in all required fields." });
-        }
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("sp_CheckUserLogin", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
 
-        if (_userRepo.ValidateUser(model.Username, model.Password))
+            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@Password", password);
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            if (!reader.Read()) return sendResponse(false, "Invalid email or password.");
+
+            return sendResponse(true, "Login successful!");
+        }
+        catch (Exception ex)
         {
-            HttpContext.Session.SetString("User", model.Username);
-            return Json(new { success = true, message = "successfully login" });
+            return sendResponse(false, ex.Message);
         }
-
-        return Json(new { success = false, message = "Invalid username or password." });
     }
 
 
